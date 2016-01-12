@@ -74,13 +74,13 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 					cell.SetString(val)
 				}
 				if headers[idx].Format == FormatIntNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "0")
+					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0")
 				}
 				if headers[idx].Format == FormatFloatNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "0.0000")
+					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0.00")
 				}
 				if headers[idx].Format == FormatPercentNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "0.0000%")
+					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "0.00%")
 				}
 				if headers[idx].Format == FormatDate {
 					d, err := time.Parse("2006-01-02", val)
