@@ -36,12 +36,11 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	var b bytes.Buffer
 	foo := bufio.NewWriter(&b)
 
-	if len(headers) > 0 {
+	nonEmptyHeaders := getNonEmptyHeaders(headers)
+
+	if len(nonEmptyHeaders) > 0 {
 		row := sheet.AddRow()
-		for i, h := range headers {
-			if len(h.Value) == 0 {
-				continue
-			}
+		for i, h := range nonEmptyHeaders {
 			sheet.SetColWidth(i, i, h.Width)
 			cell := row.AddCell()
 			style := xlsx.NewStyle()
@@ -110,4 +109,16 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	foo.Flush()
 
 	return b.Bytes(), nil
+}
+
+func getNonEmptyHeaders(headers []Header) []Header {
+	result := []Header{}
+
+	for _, h := range headers {
+		if len(h.Value) > 0 {
+			result = append(result, h)
+		}
+	}
+
+	return result
 }
