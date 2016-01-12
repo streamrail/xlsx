@@ -39,6 +39,9 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	if len(headers) > 0 {
 		row := sheet.AddRow()
 		for i, h := range headers {
+			if len(h.Value) == 0 {
+				continue
+			}
 			sheet.SetColWidth(i, i, h.Width)
 			cell := row.AddCell()
 			style := xlsx.NewStyle()
