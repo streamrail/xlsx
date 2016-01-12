@@ -62,6 +62,9 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	for _, i := range data {
 		row := sheet.AddRow()
 		for idx, val := range i {
+			if len(headers[i]) == 0 {
+				continue
+			}
 			cell := row.AddCell()
 			if val, ok := val.(string); ok {
 				style := xlsx.NewStyle()
