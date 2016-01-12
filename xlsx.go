@@ -15,6 +15,7 @@ const (
 	FormatIntNumber Format = iota
 	FormatPercentNumber
 	FormatFloatNumber
+	FormatDollarNumber
 	FormatString
 	FormatDate
 )
@@ -72,6 +73,9 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 
 				if headers[idx].Format == FormatString {
 					cell.SetString(val)
+				}
+				if headers[idx].Format == FormatDollarNumber {
+					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "$#,##0.00")
 				}
 				if headers[idx].Format == FormatIntNumber {
 					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0")
