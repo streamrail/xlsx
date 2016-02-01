@@ -107,8 +107,8 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func getStringVal(val interface{}, f Format) string {
-	if val, ok := val.(string); ok {
+func getStringVal(v interface{}, f Format) string {
+	if val, ok := v.(string); ok {
 		return val.(string)
 	}
 	switch f {
