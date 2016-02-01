@@ -109,7 +109,7 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 
 func getStringVal(val interface{}, f Format) string {
 	if val, ok := val.(string); ok {
-		return val
+		return val.(string)
 	}
 	switch f {
 	case FormatIntNumber:
