@@ -63,12 +63,12 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 
 	for _, i := range data {
 		row := sheet.AddRow()
-		for idx, val := range i {
+		for idx, v := range i {
 			if len(headers[idx].Value) == 0 {
 				continue
 			}
 			cell := row.AddCell()
-			val = getStringVal(val, headers[idx].Format)
+			val := getStringVal(v, headers[idx].Format)
 			style := xlsx.NewStyle()
 			style.Font = *xlsx.NewFont(12, "Lato")
 			style.Alignment.Horizontal = "center"
@@ -109,7 +109,7 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 
 func getStringVal(v interface{}, f Format) string {
 	if val, ok := v.(string); ok {
-		return val.(string)
+		return val
 	}
 	switch f {
 	case FormatIntNumber:
