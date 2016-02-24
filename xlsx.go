@@ -64,6 +64,9 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	for _, i := range data {
 		row := sheet.AddRow()
 		for idx, v := range i {
+			if idx >= len(headers) {
+				continue
+			}
 			if len(headers[idx].Value) == 0 {
 				continue
 			}
