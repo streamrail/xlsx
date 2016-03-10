@@ -31,7 +31,8 @@ func ToCSV(bs []byte, sheetIndex int, delimiter string) ([]byte, error) {
 		var vals []string
 		if row != nil {
 			for _, cell := range row.Cells {
-				vals = append(vals, fmt.Sprintf("%q", cell.String()))
+				val, _ := cell.String()
+				vals = append(vals, fmt.Sprintf("%q", val))
 			}
 			writer.WriteString(strings.Join(vals, delimiter) + "\n")
 		}
