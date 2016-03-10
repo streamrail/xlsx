@@ -63,45 +63,44 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 
 	for _, i := range data {
 		row := sheet.AddRow()
-		for idx, val := range i {
+		for idx, v := range i {
+			if idx >= len(headers) {
+				continue
+			}
 			if len(headers[idx].Value) == 0 {
 				continue
 			}
 			cell := row.AddCell()
-			if val, ok := val.(string); ok {
-				style := xlsx.NewStyle()
-				style.Font = *xlsx.NewFont(12, "Lato")
-				style.Alignment.Horizontal = "center"
-				style.ApplyAlignment = true
-				style.ApplyFont = true
-				cell.SetStyle(style)
+			val := getStringVal(v, headers[idx].Format)
+			style := xlsx.NewStyle()
+			style.Font = *xlsx.NewFont(12, "Lato")
+			style.Alignment.Horizontal = "center"
+			style.ApplyAlignment = true
+			style.ApplyFont = true
+			cell.SetStyle(style)
 
-				if headers[idx].Format == FormatString {
-					cell.SetString(val)
-				}
-				if headers[idx].Format == FormatDollarNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "$#,##0.00")
-				}
-				if headers[idx].Format == FormatIntNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0")
-				}
-				if headers[idx].Format == FormatFloatNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0.00")
-				}
-				if headers[idx].Format == FormatPercentNumber {
-					cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "0.00%")
-				}
-				if headers[idx].Format == FormatDate {
-					d, err := time.Parse("2006-01-02", val)
-					if err != nil {
-						return nil, fmt.Errorf("error parsing value as date: %s", val)
-					}
-					cell.SetDate(d)
-				}
-			} else {
-				return nil, fmt.Errorf("error parsing value as string: %s", val)
+			if headers[idx].Format == FormatString {
+				cell.SetString(val)
 			}
-
+			if headers[idx].Format == FormatDollarNumber {
+				cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "$#,##0.00")
+			}
+			if headers[idx].Format == FormatIntNumber {
+				cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0")
+			}
+			if headers[idx].Format == FormatFloatNumber {
+				cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "#,##0.00")
+			}
+			if headers[idx].Format == FormatPercentNumber {
+				cell.SetFloatWithFormat(stringsUtil.Float64OrDefault(val, -1), "0.00%")
+			}
+			if headers[idx].Format == FormatDate {
+				d, err := time.Parse("2006-01-02", val)
+				if err != nil {
+					return nil, fmt.Errorf("error parsing value as date: %s", val)
+				}
+				cell.SetDate(d)
+			}
 		}
 	}
 
@@ -109,6 +108,24 @@ func GetExcelData(headers []Header, data [][]interface{}) ([]byte, error) {
 	foo.Flush()
 
 	return b.Bytes(), nil
+}
+
+func getStringVal(v interface{}, f Format) string {
+	if val, ok := v.(string); ok {
+		return val
+	}
+	switch f {
+	case FormatIntNumber:
+		return "0"
+	case FormatFloatNumber:
+		return "0"
+	case FormatPercentNumber:
+		return "0"
+	case FormatDollarNumber:
+		return "0"
+	default:
+		return ""
+	}
 }
 
 func getNonEmptyHeaders(headers []Header) []Header {
